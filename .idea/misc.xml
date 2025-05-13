@@ -3,6 +3,7 @@
   <component name="ExternalStorageConfigurationManager" enabled="true" />
   <component name="FrameworkDetectionExcludesConfiguration">
     <file type="web" url="file://$PROJECT_DIR$/api-gateway/api-gateway" />
+    <file type="web" url="file://$PROJECT_DIR$/order-service/order-service" />
     <file type="web" url="file://$PROJECT_DIR$/product-service/product-service" />
   </component>
   <component name="ProjectRootManager" version="2" project-jdk-name="21" project-jdk-type="JavaSDK">
