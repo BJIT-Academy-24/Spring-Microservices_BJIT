@@ -24,5 +24,4 @@ public class OrderController {
         List<String> orders = List.of("Order1", "Order2", "Order3");
         return orders;
     }
-
 }
