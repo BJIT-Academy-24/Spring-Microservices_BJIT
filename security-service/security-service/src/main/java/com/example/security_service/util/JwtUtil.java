@@ -1,34 +1,49 @@
 package com.example.security_service.util;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import javax.crypto.SecretKey;
 import java.util.Date;
+
 
 @Component
 public class JwtUtil {
 
-    private final String SECRET_KEY = "your_secret_key";
+    private static final SecretKey SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
-    public String generateToken(String username) {
+    public String generateToken(String userName) {
+        System.out.println(SECRET_KEY);
         return Jwts.builder()
-                .setSubject(username)
+                .setSubject(userName) // Replace with dynamic username if needed
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10))
-                .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24)) // 24 hours
+                .signWith(SECRET_KEY)
                 .compact();
     }
 
     public String extractUsername(String token) {
-        return Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody().getSubject();
+        return extractClaimas(token).getSubject();
     }
 
-    public boolean validateToken(String token, String username) {
-        return username.equals(extractUsername(token)) && !isTokenExpired(token);
+    private Claims extractClaimas(String token) {
+        return Jwts.parserBuilder().
+                setSigningKey(SECRET_KEY).
+                build().
+                parseClaimsJws(token).
+                getBody();
     }
 
-    private boolean isTokenExpired(String token) {
-        return Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody().getExpiration().before(new Date());
+    public boolean validateToken(String token, UserDetails userDetails) {
+        String userName = extractUsername(token);
+        return userName.equals(userDetails.getUsername()) && !isTokenExpired(token);
+    }
+
+    public boolean isTokenExpired(String token) {
+        return extractClaimas(token).getExpiration().before(new Date());
     }
 }

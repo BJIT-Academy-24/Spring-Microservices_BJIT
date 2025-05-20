@@ -18,11 +18,12 @@ public class AuthController {
     @Autowired
     private JwtUtil jwtUtil;
 
-    @PostMapping("/login")
+    @PostMapping(value = "/login", produces = "application/json")
     public ResponseEntity<?> login(@RequestBody AuthRequest authRequest) {
         // Validate user credentials (hardcoded or via a database)
         if ("user".equals(authRequest.getUsername()) && "password".equals(authRequest.getPassword())) {
             String token = jwtUtil.generateToken(authRequest.getUsername());
+            System.out.println(token);
             return ResponseEntity.ok(new AuthResponse(token));
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
