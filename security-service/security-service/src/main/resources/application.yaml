@@ -4,3 +4,9 @@ spring:
 
   config:
     import: "optional:configserver:http://localhost:8088"
+
+  logging:
+    level:
+      root: DEBUG
+      org.springframework: DEBUG
+      org.hibernate: DEBUG
